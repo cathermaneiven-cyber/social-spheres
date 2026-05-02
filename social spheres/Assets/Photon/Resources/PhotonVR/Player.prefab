@@ -981,6 +981,8 @@ GameObject:
   - component: {fileID: 8565406117360176805}
   - component: {fileID: 898607237399874742}
   - component: {fileID: 7780029385335637883}
+  - component: {fileID: 8338581461254328306}
+  - component: {fileID: 7502107063752808548}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1079,6 +1081,42 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &8338581461254328306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5550819733793230860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 004b4ba71c755154c8aaaaa14ff9bcf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GTAG.CosmeticSDK.AvatarCosmeticController
+  boneMap:
+  - slot: 0
+    anchor: {fileID: 182381451631106285}
+  - slot: 1
+    anchor: {fileID: 38331861477394824}
+  - slot: 2
+    anchor: {fileID: 7856659514856215809}
+  - slot: 3
+    anchor: {fileID: 7910137498194017359}
+  - slot: 4
+    anchor: {fileID: 5897067227479209265}
+--- !u!114 &7502107063752808548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5550819733793230860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e237ddb61f7c6144b33c7f6c86dd323, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GTAG.CosmeticSDK.PhotonCosmeticSync
+  isLocalPlayer: 0
 --- !u!1 &6246818299328583850
 GameObject:
   m_ObjectHideFlags: 0
