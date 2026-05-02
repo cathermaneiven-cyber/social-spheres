@@ -3,31 +3,18 @@ using UnityEngine;
 
 namespace GTAG.CosmeticSDK
 {
-    // Attach this to your Player root GameObject.
-    //
-    // In the Inspector, map each EquipSlot to the matching child Transform.
-    // Based on your hierarchy these are:
-    //
-    //   Head      →  Player/Head/HeadCosmetics
-    //   Face      →  Player/Head/FaceCosmetics
-    //   Body      →  Player/Body/BodyCosmetics
-    //   LeftHand  →  Player/LeftHand/LeftHandCosmetics
-    //   RightHand →  Player/RightHand/RightHandCosmetics
-
     public class AvatarCosmeticController : MonoBehaviour
     {
         [System.Serializable]
         public class SlotAnchor
         {
             public EquipSlot slot;
-            [Tooltip("The Transform where cosmetics in this slot are parented.")]
             public Transform anchor;
         }
 
-        [Header("Bone Anchors")]
         [SerializeField] private List<SlotAnchor> boneMap = new List<SlotAnchor>();
 
-        private readonly Dictionary<EquipSlot, Transform>  _anchors   = new();
+        private readonly Dictionary<EquipSlot, Transform> _anchors = new();
         private readonly Dictionary<EquipSlot, GameObject> _instances = new();
         private CosmeticLoadout _currentLoadout = new CosmeticLoadout();
 
@@ -38,7 +25,6 @@ namespace GTAG.CosmeticSDK
                     _anchors[entry.slot] = entry.anchor;
         }
 
-        // Apply a full loadout — diffs against current state so only changed slots re-instantiate.
         public void ApplyLoadout(CosmeticLoadout loadout)
         {
             if (loadout == null) loadout = new CosmeticLoadout();
@@ -55,6 +41,7 @@ namespace GTAG.CosmeticSDK
                 }
 
                 UnequipSlot(slot);
+
                 if (!string.IsNullOrEmpty(newId))
                     SpawnItem(slot, newId, loadout.GetTint(newId));
             }
@@ -62,24 +49,28 @@ namespace GTAG.CosmeticSDK
             _currentLoadout = loadout;
         }
 
-        // Equip a single item by ID — finds its slot automatically from the registry.
         public bool EquipItem(string cosmeticId, Color? tintOverride = null)
         {
-            var def = CosmeticRegistry.Instance?.Get(cosmeticId);
+            CosmeticDefinition def = CosmeticRegistry.Instance?.Get(cosmeticId);
+
             if (def == null)
             {
-                Debug.LogWarning($"[AvatarCosmeticController] Unknown cosmetic '{cosmeticId}'");
+                Debug.LogWarning("[AvatarCosmeticController] Unknown cosmetic: " + cosmeticId);
                 return false;
             }
+
             UnequipSlot(def.slot);
             SpawnItem(def.slot, cosmeticId, tintOverride ?? def.defaultTint);
             _currentLoadout.equipped[def.slot] = cosmeticId;
+
             return true;
         }
 
         public void UnequipSlot(EquipSlot slot)
         {
-            if (_instances.TryGetValue(slot, out var go)) Destroy(go);
+            if (_instances.TryGetValue(slot, out GameObject go))
+                Destroy(go);
+
             _instances.Remove(slot);
             _currentLoadout.equipped.Remove(slot);
         }
@@ -90,42 +81,58 @@ namespace GTAG.CosmeticSDK
                 UnequipSlot(slot);
         }
 
-        public CosmeticLoadout GetCurrentLoadout() => _currentLoadout;
+        public CosmeticLoadout GetCurrentLoadout()
+        {
+            return _currentLoadout;
+        }
 
         private void SpawnItem(EquipSlot slot, string cosmeticId, Color tint)
         {
-            var def = CosmeticRegistry.Instance?.Get(cosmeticId);
-            if (def?.modelPrefab == null) return;
+            CosmeticDefinition def = CosmeticRegistry.Instance?.Get(cosmeticId);
 
-            if (!_anchors.TryGetValue(slot, out var anchor))
+            if (def == null || def.modelPrefab == null)
+                return;
+
+            if (!_anchors.TryGetValue(slot, out Transform anchor))
             {
-                Debug.LogWarning($"[AvatarCosmeticController] No anchor for slot {slot}. Did you fill in the Bone Map?");
+                Debug.LogWarning("[AvatarCosmeticController] No anchor for slot: " + slot);
                 return;
             }
 
-            var instance = Instantiate(def.modelPrefab, anchor);
-            instance.transform.localPosition    = def.positionOffset;
-            instance.transform.localEulerAngles = def.rotationOffset;
-            instance.transform.localScale       = def.scaleMultiplier;
+            GameObject instance = Instantiate(def.modelPrefab, anchor, false);
 
-            if (def.isTintable) ApplyTintToInstance(instance, tint);
+            Vector3 prefabPosition = instance.transform.localPosition;
+            Vector3 prefabRotation = instance.transform.localEulerAngles;
+            Vector3 prefabScale = instance.transform.localScale;
+
+            instance.transform.localPosition = prefabPosition + def.positionOffset;
+            instance.transform.localEulerAngles = prefabRotation + def.rotationOffset;
+            instance.transform.localScale = Vector3.Scale(prefabScale, def.scaleMultiplier);
+
+            if (def.isTintable)
+                ApplyTintToInstance(instance, tint);
 
             _instances[slot] = instance;
         }
 
         private void ApplyTint(EquipSlot slot, Color tint)
         {
-            if (!_instances.TryGetValue(slot, out var go)) return;
-            var id  = _currentLoadout.GetItemId(slot);
-            var def = id != null ? CosmeticRegistry.Instance?.Get(id) : null;
-            if (def is { isTintable: true }) ApplyTintToInstance(go, tint);
+            if (!_instances.TryGetValue(slot, out GameObject go))
+                return;
+
+            string id = _currentLoadout.GetItemId(slot);
+            CosmeticDefinition def = id != null ? CosmeticRegistry.Instance?.Get(id) : null;
+
+            if (def != null && def.isTintable)
+                ApplyTintToInstance(go, tint);
         }
 
         private static void ApplyTintToInstance(GameObject go, Color tint)
         {
-            foreach (var r in go.GetComponentsInChildren<Renderer>())
-                foreach (var mat in r.materials)
-                    if (mat.HasProperty("_Color")) mat.color = tint;
+            foreach (Renderer r in go.GetComponentsInChildren<Renderer>())
+                foreach (Material mat in r.materials)
+                    if (mat.HasProperty("_Color"))
+                        mat.color = tint;
         }
     }
 }
