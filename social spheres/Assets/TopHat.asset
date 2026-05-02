@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GTAG.CosmeticSDK.CosmeticItemAsset
   _definition:
     cosmeticId: TopHat
-    displayName: Top Hat
+    displayName: TopHat
     description: 
     rarity: 0
     slot: 0
-    modelPrefab: {fileID: 4737727242676683390, guid: 7ca33472778964a4483663dfd5e89d35, type: 3}
+    modelPrefab: {fileID: 5409153016674849120, guid: 7ca33472778964a4483663dfd5e89d35, type: 3}
     previewIcon: {fileID: 21300000, guid: e45f8f823c093d941855bb23b53b9414, type: 3}
     isTintable: 0
     defaultTint: {r: 1, g: 1, b: 1, a: 1}
