@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98efab340cfed8f479bbfbb196861a15, type: 3}
+  m_Name: TopHat
+  m_EditorClassIdentifier: Assembly-CSharp::GTAG.CosmeticSDK.CosmeticItemAsset
+  _definition:
+    cosmeticId: TopHat
+    displayName: Top Hat
+    description: 
+    rarity: 0
+    slot: 0
+    modelPrefab: {fileID: 4737727242676683390, guid: 7ca33472778964a4483663dfd5e89d35, type: 3}
+    previewIcon: {fileID: 21300000, guid: e45f8f823c093d941855bb23b53b9414, type: 3}
+    isTintable: 0
+    defaultTint: {r: 1, g: 1, b: 1, a: 1}
+    positionOffset: {x: 0, y: 0, z: 0}
+    rotationOffset: {x: 0, y: 0, z: 0}
+    scaleMultiplier: {x: 1, y: 1, z: 1}
